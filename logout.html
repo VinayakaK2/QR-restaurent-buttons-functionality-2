@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logging out...</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f7f7f7; }
+    .box { background: #fff; padding: 24px 28px; border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); text-align: center; }
+    .muted { color: #666; font-size: 14px; }
+  </style>
+  <script>
+    (async function() {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      } catch (e) {}
+      window.location.replace('/login.html');
+    })();
+  </script>
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=/login.html">
+  </noscript>
+  </head>
+<body>
+  <div class="box">
+    <div>Signing you out…</div>
+    <div class="muted">If you are not redirected, <a href="/login.html">click here</a>.</div>
+  </div>
+</body>
+</html>
+
+

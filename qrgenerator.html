@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavorFusion - QR Code Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary-red: #E63946;
+            --primary-orange: #FF8A00;
+            --gold: #FFD700;
+            --dark-bg: #1a1a1a;
+            --sidebar-bg: #2D3748;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #2D3748;
+            --text-light: #718096;
+            --success: #48BB78;
+            --warning: #ED8936;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --gradient: linear-gradient(135deg, #E63946 0%, #FF8A00 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 30px 0;
+            transition: all 0.3s ease;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            text-align: center;
+            padding: 0 25px 30px;
+            border-bottom: 1px solid #4A5568;
+            margin-bottom: 25px;
+        }
+
+        .logo h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0 20px;
+        }
+
+        .nav-links li {
+            margin-bottom: 8px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #CBD5E0;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(230, 57, 70, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-links a i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        /* Management Section */
+        .management-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(230, 57, 70, 0.3);
+        }
+
+        .btn-secondary {
+            background: #E2E8F0;
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #CBD5E0;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38A169;
+            transform: translateY(-2px);
+        }
+
+        /* QR Generator Section */
+        .qr-generator {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .qr-generator {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .qr-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .qr-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #E2E8F0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* QR Code Display */
+        .qr-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border: 2px dashed #E2E8F0;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #qrcode {
+            margin: 20px 0;
+        }
+
+        .qr-placeholder {
+            color: var(--text-light);
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .qr-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #CBD5E0;
+        }
+
+        .qr-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .table-info {
+            background: #F7FAFC;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .table-info h4 {
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .table-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Tables List */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .data-table th {
+            background: #F7FAFC;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .data-table tr:hover {
+            background: #F7FAFC;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-generated {
+            background: #C6F6D5;
+            color: #22543D;
+        }
+
+        .status-pending {
+            background: #FEFCBF;
+            color: #744210;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-download {
+            background: #BEE3F8;
+            color: #2A69AC;
+        }
+
+        .btn-download:hover {
+            background: #90CDF4;
+        }
+
+        .btn-regenerate {
+            background: #FED7D7;
+            color: #C53030;
+        }
+
+        .btn-regenerate:hover {
+            background: #FEB2B2;
+        }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            background: #F7FAFC;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .bulk-actions h3 {
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .bulk-actions p {
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 20px;
+            }
+            
+            .nav-links {
+                display: flex;
+                overflow-x: auto;
+                padding: 10px 0;
+            }
+            
+            .nav-links li {
+                margin: 0 10px 0 0;
+            }
+            
+            .nav-links a {
+                white-space: nowrap;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .qr-actions {
+                flex-direction: column;
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+
+        /* QR Code Styling */
+        .qr-code-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .qr-table-number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            color: var(--primary-red);
+            border: 2px solid var(--primary-red);
+        }
+    </style>
+    <script src="/modal.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h2>FlavorFusion</h2>
+            <p>Admin Dashboard</p>
+        </div>
+        <ul class="nav-links">
+            <li><a href="admin.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="menumng.html"><i class="fas fa-utensils"></i> Menu Management</a></li>
+            <li><a href="categories.html"><i class="fas fa-layer-group"></i> Categories</a></li>
+            <li><a href="#" class="active"><i class="fas fa-qrcode"></i> QR Generator</a></li>
+            <li><a href="tablemng.html"><i class="fas fa-table"></i> Table Management</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="logout.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>QR Code Generator</h1>
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <div>
+                    <div style="font-weight: 600;">Admin User</div>
+                    <div style="font-size: 0.9rem; color: var(--text-light);">Restaurant Manager</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Generator Section -->
+        <div class="management-section">
+            <div class="section-header">
+                <h2>Generate QR Code</h2>
+            </div>
+
+            <div class="qr-generator">
+                <!-- Controls -->
+                <div class="qr-controls">
+                    <div class="form-group">
+                        <label for="tableSelect">Select Table Number</label>
+                        <select class="form-control" id="tableSelect">
+                            <option value="">-- Select Table --</option>
+                            <!-- Tables will be populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customTable">Or Enter Custom Table Number</label>
+                        <input type="number" class="form-control" id="customTable" placeholder="Enter table number" min="1" max="50">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="qrUrl">QR Code Destination URL</label>
+                        <input type="text" class="form-control" id="qrUrl" value="https://flavorfusion.com/menu" placeholder="Enter URL for QR code">
+                        <small style="color: var(--text-light); margin-top: 5px; display: block;">
+                            This is where customers will be directed when scanning the QR code
+                        </small>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="generateQRCode()">
+                        <i class="fas fa-qrcode"></i> Generate QR Code
+                    </button>
+
+                    <div class="table-info" id="tableInfo" style="display: none;">
+                        <h4>Table Information</h4>
+                        <p id="tableDetails">Table #1 - Last generated: Never</p>
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div class="qr-preview">
+                    <div class="qr-container">
+                        <div id="qrcode"></div>
+                        <div class="qr-placeholder" id="qrPlaceholder">
+                            <i class="fas fa-qrcode"></i>
+                            <h3>QR Code Preview</h3>
+                            <p>Select a table and generate QR code to see preview</p>
+                        </div>
+                    </div>
+
+                    <div class="qr-actions" id="qrActions" style="display: none;">
+                        <button class="btn btn-success" onclick="downloadQRCode()">
+                            <i class="fas fa-download"></i> Download PNG
+                        </button>
+                        <button class="btn btn-primary" onclick="downloadQRPDF()">
+                            <i class="fas fa-file-pdf"></i> Download PDF
+                        </button>
+                        <button class="btn btn-secondary" onclick="printQRCode()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bulk QR Generation -->
+        <div class="management-section">
+            <div class="section-header">
+                <h2>Bulk QR Generation</h2>
+            </div>
+
+            <div class="bulk-actions">
+                <h3>Generate All Table QR Codes</h3>
+                <p>Create QR codes for all tables at once. Perfect for initial setup or reprinting all codes.</p>
+                <button class="btn btn-primary" onclick="generateAllQRCodes()">
+                    <i class="fas fa-bolt"></i> Generate All QR Codes
+                </button>
+                <button class="btn btn-success" onclick="downloadAllQRCodes()" style="margin-left: 10px;">
+                    <i class="fas fa-download"></i> Download All as ZIP
+                </button>
+            </div>
+        </div>
+
+        
+    </div>
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const API_PREFIX = "/api";
+            const qrContainer = document.getElementById("qrcode");
+            const qrPlaceholder = document.getElementById("qrPlaceholder");
+            const qrActions = document.getElementById("qrActions");
+            const tableSelect = document.getElementById("tableSelect");
+            const customTable = document.getElementById("customTable");
+            const qrUrlInput = document.getElementById("qrUrl");
+            const tableInfo = document.getElementById("tableInfo");
+            const tableDetails = document.getElementById("tableDetails");
+
+            const state = {
+                tables: [],
+                currentTable: null
+            };
+            let initialSelectionHandled = false;
+
+            function upsertLocalTable(table) {
+                if (!table) return;
+                const previousValue = tableSelect.value;
+                const idx = state.tables.findIndex(t => t.id === table.id);
+                if (idx >= 0) {
+                    state.tables[idx] = table;
+                } else {
+                    state.tables.push(table);
+                }
+                state.tables.sort((a, b) => {
+                    const aNum = Number.isFinite(a.number) ? a.number : Number.MAX_SAFE_INTEGER;
+                    const bNum = Number.isFinite(b.number) ? b.number : Number.MAX_SAFE_INTEGER;
+                    return aNum - bNum;
+                });
+                renderTableOptions();
+                if (table.id) {
+                    tableSelect.value = table.id;
+                } else if (previousValue) {
+                    tableSelect.value = previousValue;
+                }
+            }
+
+            function renderTableOptions() {
+                tableSelect.innerHTML = '<option value="">-- Select Table --</option>';
+                state.tables.forEach(t => {
+                    const opt = document.createElement("option");
+                    opt.value = t.id;
+                    const labelNumber = t.number !== undefined && t.number !== null ? `Table ${t.number}` : (t.name || t.id);
+                    opt.textContent = labelNumber;
+                    tableSelect.appendChild(opt);
+                });
+            }
+
+            function showTableInfo(table) {
+                if (!table) {
+                    tableInfo.style.display = "none";
+                    tableDetails.textContent = "";
+                    state.currentTable = null;
+                    return;
+                }
+                const numberText = table.number !== undefined && table.number !== null ? `Table #${table.number}` : (table.name || "Table");
+                const lastGenerated = table.qrGeneratedAt
+                    ? new Date(table.qrGeneratedAt).toLocaleString()
+                    : "Never";
+                tableDetails.textContent = `${numberText} - Last generated: ${lastGenerated}`;
+                tableInfo.style.display = "block";
+                state.currentTable = table;
+            }
+
+            function trySelectTableFromQuery() {
+                if (initialSelectionHandled) return;
+                const params = new URLSearchParams(window.location.search);
+                const targetId = params.get("tableId");
+                if (!targetId) return;
+                const table = state.tables.find(t => String(t.id) === String(targetId));
+                if (table) {
+                    tableSelect.value = table.id;
+                    showTableInfo(table);
+                    initialSelectionHandled = true;
+                }
+            }
+
+            async function loadTables() {
+                try {
+                    const res = await fetch(`${API_PREFIX}/tables`, { credentials: "include" });
+                    const data = await res.json();
+                    if (!data.ok) throw new Error(data.message || "Failed to load tables");
+                    state.tables = Array.isArray(data.tables) ? data.tables.slice() : [];
+                    state.tables.sort((a, b) => {
+                        const aNum = Number.isFinite(a.number) ? a.number : Number.MAX_SAFE_INTEGER;
+                        const bNum = Number.isFinite(b.number) ? b.number : Number.MAX_SAFE_INTEGER;
+                        return aNum - bNum;
+                    });
+                    renderTableOptions();
+                    trySelectTableFromQuery();
+                } catch (err) {
+                    console.error(err);
+                    alert("Unable to load tables. Please refresh.");
+                }
+            }
+
+            tableSelect.addEventListener("change", () => {
+                customTable.value = "";
+                const selectedId = tableSelect.value;
+                const table = state.tables.find(t => t.id === selectedId) || null;
+                showTableInfo(table);
+            });
+
+            customTable.addEventListener("input", () => {
+                tableSelect.value = "";
+                const customNumber = customTable.value;
+                if (!customNumber) {
+                    showTableInfo(null);
+                    return;
+                }
+                showTableInfo({ number: Number(customNumber), qrGeneratedAt: null });
+            });
+
+            function renderQrPreview(finalUrl) {
+                qrContainer.innerHTML = "";
+                new QRCode(qrContainer, {
+                    text: finalUrl,
+                    width: 160,
+                    height: 160,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+                qrPlaceholder.style.display = "none";
+                qrActions.style.display = "flex";
+            }
+
+            window.generateQRCode = async function () {
+                const selectedTableId = tableSelect.value;
+                const customNumber = customTable.value ? Number(customTable.value) : null;
+                const qrUrl = qrUrlInput.value.trim();
+
+                if (!selectedTableId && !customNumber) {
+                    alert("Select a table or enter a table number first.");
+                    return;
+                }
+                if (!qrUrl) {
+                    alert("Please enter destination URL.");
+                    return;
+                }
+
+                const payload = {
+                    baseUrl: qrUrl
+                };
+                if (selectedTableId) {
+                    payload.tableId = selectedTableId;
+                } else {
+                    payload.table = customNumber;
+                    payload.autoCreate = true;
+                }
+
+                try {
+                    const res = await fetch("/api/qr/generate", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    if (!data.ok) throw new Error(data.message || "Failed to generate QR link");
+                    const finalUrl = data.url;
+                    renderQrPreview(finalUrl);
+                    if (data.table) {
+                        upsertLocalTable(data.table);
+                        showTableInfo(data.table);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("QR generation failed: " + err.message);
+                }
+            };
+
+            window.downloadQRCode = function () {
+                const canvas = qrContainer.querySelector("canvas");
+                if (!canvas) return alert("Generate a QR first");
+                const tableNumber = state.currentTable?.number ?? "table";
+                const link = document.createElement("a");
+                link.href = canvas.toDataURL("image/png");
+                link.download = `table-${tableNumber}-qr.png`;
+                link.click();
+            };
+
+            window.downloadQRPDF = function () {
+                const canvas = qrContainer.querySelector("canvas");
+                if (!canvas) return alert("Generate a QR first");
+                const tableNumber = state.currentTable?.number ?? "table";
+                const opt = {
+                    margin: 10,
+                    filename: `table-${tableNumber}-qr.pdf`,
+                    image: { type: "jpeg", quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: "mm", format: "a6" }
+                };
+                html2pdf().set(opt).from(qrContainer).save();
+            };
+
+            window.printQRCode = function () {
+                const canvas = qrContainer.querySelector("canvas");
+                if (!canvas) return alert("Generate a QR first");
+                const tableNumber = state.currentTable?.number ?? "table";
+                const win = window.open("");
+                win.document.write(`<img src="${canvas.toDataURL("image/png")}" style="width:200px;"><br><h3>Table ${tableNumber}</h3>`);
+                win.print();
+                win.close();
+            };
+
+            window.generateAllQRCodes = async function () {
+                const qrUrl = qrUrlInput.value.trim();
+                if (!qrUrl) {
+                    alert("Enter a destination URL before generating bulk QR codes.");
+                    return;
+                }
+                if (!state.tables.length) {
+                    alert("No tables found. Add tables first.");
+                    return;
+                }
+                if (!confirm(`Generate QR codes for ${state.tables.length} tables?`)) return;
+                for (const table of state.tables) {
+                    try {
+                        await fetch("/api/qr/generate", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            credentials: "include",
+                            body: JSON.stringify({ tableId: table.id, baseUrl: qrUrl })
+                        });
+                    } catch (err) {
+                        console.warn("Failed to generate QR for table", table.id, err);
+                    }
+                }
+                await loadTables();
+                alert("Bulk QR generation complete.");
+            };
+
+            window.downloadAllQRCodes = function () {
+                alert("Downloading all QR codes as ZIP is not available yet.");
+            };
+
+            loadTables();
+        });
+    </script>
+
+
+</body>
+</html>

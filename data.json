@@ -1,0 +1,102 @@
+{
+  "admins": [
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "username": "admin",
+      "passwordHash": "$2b$10$dU49Km1oCpXrakqoykKKMeyIUd3xTMEu3PZw6A7G6vo1MFQCm9O2m",
+      "role": "owner",
+      "createdAt": "2025-10-12T00:00:00.000Z",
+      "updatedAt": "2025-10-12T00:00:00.000Z"
+    }
+  ],
+  "tables": [],
+  "categories": [
+    {
+      "id": "c1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Appetizers",
+      "description": "Starters and small bites",
+      "displayOrder": 1,
+      "active": true,
+      "createdAt": "2025-10-12T00:00:00.000Z",
+      "updatedAt": "2025-10-12T00:00:00.000Z"
+    },
+    {
+      "id": "c2b2c3d4-e5f6-7890-abcd-ef1234567891",
+      "name": "Main Course",
+      "description": "Main dishes and entrees",
+      "displayOrder": 2,
+      "active": true,
+      "createdAt": "2025-10-12T00:00:00.000Z",
+      "updatedAt": "2025-10-12T00:00:00.000Z"
+    }
+  ],
+  "menu": [
+    {
+      "id": "m1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "categoryId": "c1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Garlic Bread",
+      "description": "Freshly baked bread with garlic butter",
+      "price": 120,
+      "available": true,
+      "imageUrl": "",
+      "prepTime": 10,
+      "createdAt": "2025-10-12T00:00:00.000Z",
+      "updatedAt": "2025-10-12T00:00:00.000Z"
+    },
+    {
+      "id": "m2b2c3d4-e5f6-7890-abcd-ef1234567891",
+      "categoryId": "c2b2c3d4-e5f6-7890-abcd-ef1234567891",
+      "name": "Butter Chicken",
+      "description": "Tender chicken in rich tomato butter sauce",
+      "price": 320,
+      "available": true,
+      "imageUrl": "",
+      "prepTime": 25,
+      "createdAt": "2025-10-12T00:00:00.000Z",
+      "updatedAt": "2025-10-12T00:00:00.000Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "o1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "orderNumber": "ORD-1001",
+      "tableId": "t1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "items": [
+        {
+          "menuItemId": "m1b2c3d4-e5f6-7890-abcd-ef1234567890",
+          "name": "Garlic Bread",
+          "quantity": 2,
+          "price": 120,
+          "total": 240
+        }
+      ],
+      "status": "pending",
+      "totalAmount": 240,
+      "notes": "",
+      "createdAt": "2025-10-12T12:00:00.000Z",
+      "updatedAt": "2025-10-12T12:00:00.000Z"
+    }
+  ],
+  "settings": {
+    "restaurantName": "My Restaurant",
+    "contactEmail": "",
+    "address": "",
+    "phone": "",
+    "gstPercentage": 5,
+    "currency": "INR",
+    "orderPrefix": "ORD-",
+    "nextOrderNumber": 1002,
+    "createdAt": "2025-10-12T00:00:00.000Z",
+    "updatedAt": "2025-10-12T00:00:00.000Z"
+  },
+  "system": {
+    "lastBackup": "2025-10-12T00:00:00.000Z",
+    "version": "1.0.0",
+    "dataVersion": 1
+  },
+  "admin": {
+    "username": "admin",
+    "passwordHash": "$2a$10$oRLW87XEWiL5I4GKSIIdS.2pxq.AmHyiSkUSohwXGJDHgQkIIyuAO"
+  },
+  "sessions": []
+}

@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavorFusion - Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-red: #E63946;
+            --primary-orange: #FF8A00;
+            --gold: #FFD700;
+            --dark-bg: #1a1a1a;
+            --sidebar-bg: #2D3748;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #2D3748;
+            --text-light: #718096;
+            --success: #48BB78;
+            --warning: #ED8936;
+            --info: #4299E1;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --gradient: linear-gradient(135deg, #E63946 0%, #FF8A00 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 30px 0;
+            transition: all 0.3s ease;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            text-align: center;
+            padding: 0 25px 30px;
+            border-bottom: 1px solid #4A5568;
+            margin-bottom: 25px;
+        }
+
+        .logo h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0 20px;
+        }
+
+        .nav-links li {
+            margin-bottom: 8px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #CBD5E0;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(230, 57, 70, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-links a i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        /* Management Section */
+        .management-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(230, 57, 70, 0.3);
+        }
+
+        .btn-secondary {
+            background: #E2E8F0;
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #CBD5E0;
+            transform: translateY(-2px);
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .date-filter {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Form Controls */
+        .form-control {
+            padding: 12px 15px;
+            border: 2px solid #E2E8F0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+        }
+
+        /* Revenue Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-red);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-red);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            background: #F7FAFC;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .trend {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            color: var(--success);
+        }
+
+        .trend-down {
+            color: var(--primary-red);
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            height: 350px;
+            transition: all 0.3s ease;
+        }
+
+        .chart-container:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .chart-container h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .chart-wrapper {
+            height: 280px;
+            position: relative;
+        }
+
+        /* Popular Items */
+        .popular-items {
+            margin-top: 10px;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #E2E8F0;
+            transition: all 0.3s ease;
+        }
+
+        .item-row:hover {
+            background: #F7FAFC;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 0 -5px;
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .item-rank {
+            width: 28px;
+            height: 28px;
+            background: var(--gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .item-name {
+            font-weight: 500;
+        }
+
+        .item-stats {
+            text-align: right;
+        }
+
+        .item-orders {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .item-revenue {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Category Sales */
+        .category-sales {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .category-card {
+            background: #F7FAFC;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .category-card:hover {
+            border-color: var(--primary-red);
+            transform: translateY(-2px);
+        }
+
+        .category-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .category-revenue {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-red);
+            margin-bottom: 5px;
+        }
+
+        .category-orders {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Time Filters */
+        .time-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .time-filter {
+            padding: 10px 20px;
+            border: 2px solid #E2E8F0;
+            border-radius: 25px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .time-filter.active {
+            background: var(--gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+        }
+
+        .time-filter:hover:not(.active) {
+            border-color: var(--primary-red);
+            color: var(--primary-red);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 20px;
+            }
+            
+            .nav-links {
+                display: flex;
+                overflow-x: auto;
+                padding: 10px 0;
+            }
+            
+            .nav-links li {
+                margin: 0 10px 0 0;
+            }
+            
+            .nav-links a {
+                white-space: nowrap;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .date-filter {
+                justify-content: center;
+            }
+            
+            .time-filters {
+                justify-content: center;
+            }
+            
+            .category-sales {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+    <script src="/modal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h2>FlavorFusion</h2>
+            <p>Admin Dashboard</p>
+        </div>
+        <ul class="nav-links">
+            <li><a href="admin.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="menumng.html"><i class="fas fa-utensils"></i> Menu Management</a></li>
+            <li><a href="categories.html"><i class="fas fa-layer-group"></i> Categories</a></li>
+            <li><a href="qrgenerator.html"><i class="fas fa-qrcode"></i> QR Generator</a></li>
+            <li><a href="tablemng.html"><i class="fas fa-table"></i> Table Management</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="#" class="active"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="logout.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Analytics & Reports</h1>
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <div>
+                    <div style="font-weight: 600;">Admin User</div>
+                    <div style="font-size: 0.9rem; color: var(--text-light);">Restaurant Manager</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="date-filter">
+                <label style="font-weight: 500; color: var(--text-dark);">Date Range:</label>
+                <input type="date" class="form-control" id="startDate" value="2024-01-01">
+                <span style="color: var(--text-light);">to</span>
+                <input type="date" class="form-control" id="endDate" value="2024-01-15">
+            </div>
+            <div class="time-filters">
+                <button class="time-filter active" onclick="setTimeFilter('day', event)">Daily</button>
+                <button class="time-filter" onclick="setTimeFilter('week', event)">Weekly</button>
+                <button class="time-filter" onclick="setTimeFilter('month', event)">Monthly</button>
+            </div>
+            <button class="btn btn-primary" onclick="downloadReport()">
+                <i class="fas fa-download"></i> Download Report (PDF)
+            </button>
+        </div>
+
+        <!-- Revenue Summary Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">$8,247</div>
+                <div class="stat-label">Total Revenue</div>
+                <div class="trend trend-up">↑ 12% from last period</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">156</div>
+                <div class="stat-label">Total Orders</div>
+                <div class="trend trend-up">↑ 8% from last period</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$52.87</div>
+                <div class="stat-label">Average Order Value</div>
+                <div class="trend trend-up">↑ 4% from last period</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">84%</div>
+                <div class="stat-label">Table Occupancy</div>
+                <div class="trend trend-down">↓ 2% from last period</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Sales Chart -->
+            <div class="chart-container">
+                <h3>Sales Overview</h3>
+                <div class="chart-wrapper">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Category Sales -->
+            <div class="chart-container">
+                <h3>Sales by Category</h3>
+                <div class="chart-wrapper">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Popular Dishes -->
+            <div class="management-section">
+                <div class="section-header">
+                    <h2>Most Popular Dishes</h2>
+                </div>
+                <div class="popular-items">
+                    <div class="item-row">
+                        <div class="item-info">
+                            <div class="item-rank">1</div>
+                            <div class="item-name">Margherita Pizza</div>
+                        </div>
+                        <div class="item-stats">
+                            <div class="item-orders">42 orders</div>
+                            <div class="item-revenue">$545.58</div>
+                        </div>
+                    </div>
+                    <div class="item-row">
+                        <div class="item-info">
+                            <div class="item-rank">2</div>
+                            <div class="item-name">Grilled Salmon</div>
+                        </div>
+                        <div class="item-stats">
+                            <div class="item-orders">38 orders</div>
+                            <div class="item-revenue">$645.62</div>
+                        </div>
+                    </div>
+                    <div class="item-row">
+                        <div class="item-info">
+                            <div class="item-rank">3</div>
+                            <div class="item-name">Chicken Burger</div>
+                        </div>
+                        <div class="item-stats">
+                            <div class="item-orders">35 orders</div>
+                            <div class="item-revenue">$384.65</div>
+                        </div>
+                    </div>
+                    <div class="item-row">
+                        <div class="item-info">
+                            <div class="item-rank">4</div>
+                            <div class="item-name">Caesar Salad</div>
+                        </div>
+                        <div class="item-stats">
+                            <div class="item-orders">32 orders</div>
+                            <div class="item-revenue">$287.68</div>
+                        </div>
+                    </div>
+                    <div class="item-row">
+                        <div class="item-info">
+                            <div class="item-rank">5</div>
+                            <div class="item-name">Chocolate Brownie</div>
+                        </div>
+                        <div class="item-stats">
+                            <div class="item-orders">28 orders</div>
+                            <div class="item-revenue">$195.72</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hourly Sales -->
+            <div class="chart-container">
+                <h3>Peak Hours Analysis</h3>
+                <div class="chart-wrapper">
+                    <canvas id="hourlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Performance -->
+        <div class="management-section">
+            <div class="section-header">
+                <h2>Category Performance</h2>
+            </div>
+            <div class="category-sales">
+                <div class="category-card">
+                    <div class="category-name">Main Course</div>
+                    <div class="category-revenue">$3,845</div>
+                    <div class="category-orders">78 orders</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-name">Appetizers</div>
+                    <div class="category-revenue">$1,234</div>
+                    <div class="category-orders">45 orders</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-name">Desserts</div>
+                    <div class="category-revenue">$987</div>
+                    <div class="category-orders">32 orders</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-name">Drinks</div>
+                    <div class="category-revenue">$856</div>
+                    <div class="category-orders">67 orders</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-name">Salads</div>
+                    <div class="category-revenue">$654</div>
+                    <div class="category-orders">28 orders</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTimeFilter = 'day';
+        let charts = {};
+
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            setupEventListeners();
+            
+            // Set default date range to last 7 days
+            const today = new Date();
+            const lastWeek = new Date(today);
+            lastWeek.setDate(today.getDate() - 7);
+            
+            document.getElementById('startDate').value = lastWeek.toISOString().split('T')[0];
+            document.getElementById('endDate').value = today.toISOString().split('T')[0];
+            
+            // Add event listeners for date changes
+            document.getElementById('startDate').addEventListener('change', fetchAndUpdateCharts);
+            document.getElementById('endDate').addEventListener('change', fetchAndUpdateCharts);
+            
+            // Fetch initial data
+            fetchAndUpdateCharts();
+        });
+
+        function setupEventListeners() {
+            // Navigation functionality
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') === '#') {
+                        e.preventDefault();
+                    }
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        function initializeCharts() {
+            // Sales Chart
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            charts.sales = new Chart(salesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan 8', 'Jan 9', 'Jan 10', 'Jan 11', 'Jan 12', 'Jan 13', 'Jan 14'],
+                    datasets: [{
+                        label: 'Revenue ($)',
+                        data: [1200, 1900, 1500, 2100, 1800, 2400, 2200],
+                        borderColor: '#E63946',
+                        backgroundColor: 'rgba(230, 57, 70, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Category Chart
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            charts.category = new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Main Course', 'Appetizers', 'Desserts', 'Drinks', 'Salads'],
+                    datasets: [{
+                        data: [38, 15, 12, 22, 13],
+                        backgroundColor: [
+                            '#E63946',
+                            '#FF8A00',
+                            '#48BB78',
+                            '#4299E1',
+                            '#9F7AEA'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+
+            // Hourly Chart
+            const hourlyCtx = document.getElementById('hourlyChart').getContext('2d');
+            charts.hourly = new Chart(hourlyCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['11AM', '12PM', '1PM', '2PM', '6PM', '7PM', '8PM', '9PM'],
+                    datasets: [{
+                        label: 'Orders',
+                        data: [12, 28, 35, 18, 22, 45, 38, 15],
+                        backgroundColor: '#E63946',
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setTimeFilter(filter, event) {
+            currentTimeFilter = filter;
+            
+            // Update active filter button
+            document.querySelectorAll('.time-filter').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (event && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // Fallback: find button by filter value
+                document.querySelectorAll('.time-filter').forEach(btn => {
+                    if (btn.textContent.toLowerCase().includes(filter)) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            // Update date range based on filter
+            updateDateRangeForFilter(filter);
+            
+            // Update charts based on filter
+            updateChartsForFilter(filter);
+        }
+
+        function updateDateRangeForFilter(filter) {
+            const today = new Date();
+            const startDate = document.getElementById('startDate');
+            const endDate = document.getElementById('endDate');
+            
+            let start, end;
+            
+            switch(filter) {
+                case 'day':
+                    start = new Date(today);
+                    start.setHours(0, 0, 0, 0);
+                    end = new Date(today);
+                    end.setHours(23, 59, 59, 999);
+                    break;
+                case 'week':
+                    start = new Date(today);
+                    start.setDate(today.getDate() - 7);
+                    end = new Date(today);
+                    break;
+                case 'month':
+                    start = new Date(today.getFullYear(), today.getMonth(), 1);
+                    end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                    break;
+            }
+            
+            if (start && end) {
+                startDate.value = start.toISOString().split('T')[0];
+                endDate.value = end.toISOString().split('T')[0];
+            }
+            
+            // Trigger chart update
+            fetchAndUpdateCharts();
+        }
+
+        async function fetchAndUpdateCharts() {
+            try {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                
+                // Fetch orders from server
+                const res = await fetch('/api/orders', { credentials: 'include' });
+                const data = await res.json();
+                
+                if (data.ok && Array.isArray(data.orders)) {
+                    const orders = data.orders.filter(order => {
+                        if (!order.createdAt) return false;
+                        const orderDate = new Date(order.createdAt);
+                        const start = new Date(startDate);
+                        const end = new Date(endDate);
+                        end.setHours(23, 59, 59, 999);
+                        return orderDate >= start && orderDate <= end;
+                    });
+                    
+                    updateChartsWithData(orders, currentTimeFilter);
+                    updateStatsWithData(orders);
+                }
+            } catch (error) {
+                console.error('Failed to fetch orders:', error);
+                // Fallback to static data
+                updateChartsForFilter(currentTimeFilter);
+            }
+        }
+
+        function updateChartsWithData(orders, filter) {
+            let labels, salesData, categoryData, hourlyData;
+
+            // Calculate revenue per period
+            const revenueByPeriod = {};
+            const categoryRevenue = {};
+            const hourlyOrders = {};
+            
+            orders.forEach(order => {
+                const orderDate = new Date(order.createdAt);
+                const orderTotal = order.items.reduce((sum, item) => {
+                    return sum + ((item.price || 0) * (item.quantity || item.qty || 0));
+                }, 0);
+                
+                // Group by period based on filter
+                let periodKey;
+                switch(filter) {
+                    case 'day':
+                        periodKey = orderDate.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
+                        break;
+                    case 'week':
+                        periodKey = orderDate.toLocaleDateString('en-US', { weekday: 'short' });
+                        break;
+                    case 'month':
+                        const weekNum = Math.ceil(orderDate.getDate() / 7);
+                        periodKey = `Week ${weekNum}`;
+                        break;
+                }
+                
+                if (!revenueByPeriod[periodKey]) {
+                    revenueByPeriod[periodKey] = 0;
+                }
+                revenueByPeriod[periodKey] += orderTotal;
+                
+                // Category revenue
+                order.items.forEach(item => {
+                    const category = item.category || 'Other';
+                    if (!categoryRevenue[category]) {
+                        categoryRevenue[category] = 0;
+                    }
+                    categoryRevenue[category] += (item.price || 0) * (item.quantity || item.qty || 0);
+                });
+                
+                // Hourly orders
+                const hour = orderDate.getHours();
+                if (!hourlyOrders[hour]) {
+                    hourlyOrders[hour] = 0;
+                }
+                hourlyOrders[hour]++;
+            });
+
+            // Prepare data for charts
+            switch(filter) {
+                case 'day':
+                    labels = ['11AM', '12PM', '1PM', '2PM', '6PM', '7PM', '8PM', '9PM'];
+                    salesData = labels.map(label => {
+                        const hour = parseInt(label.replace(/[^\d]/g, ''));
+                        const periodKey = hour < 12 ? `${hour}AM` : `${hour === 12 ? 12 : hour - 12}PM`;
+                        return revenueByPeriod[periodKey] || 0;
+                    });
+                    break;
+                case 'week':
+                    labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    salesData = labels.map(day => revenueByPeriod[day] || 0);
+                    break;
+                case 'month':
+                    labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                    salesData = labels.map(week => revenueByPeriod[week] || 0);
+                    break;
+            }
+
+            // Update sales chart
+            if (charts.sales) {
+                charts.sales.data.labels = labels;
+                charts.sales.data.datasets[0].data = salesData;
+                charts.sales.update();
+            }
+
+            // Update hourly chart
+            if (charts.hourly) {
+                const hourlyLabels = Object.keys(hourlyOrders).sort((a, b) => a - b).map(h => {
+                    const hour = parseInt(h);
+                    return hour < 12 ? `${hour}AM` : `${hour === 12 ? 12 : hour - 12}PM`;
+                });
+                const hourlyData = Object.keys(hourlyOrders).sort((a, b) => a - b).map(h => hourlyOrders[h]);
+                charts.hourly.data.labels = hourlyLabels;
+                charts.hourly.data.datasets[0].data = hourlyData;
+                charts.hourly.update();
+            }
+        }
+
+        function updateStatsWithData(orders) {
+            const totalRevenue = orders.reduce((sum, order) => {
+                return sum + order.items.reduce((s, item) => {
+                    return s + ((item.price || 0) * (item.quantity || item.qty || 0));
+                }, 0);
+            }, 0);
+            
+            const totalOrders = orders.length;
+            const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+            
+            // Update stat cards
+            const revenueEl = document.querySelector('.stat-card .stat-value');
+            if (revenueEl) {
+                revenueEl.textContent = `₹${totalRevenue.toFixed(2)}`;
+            }
+            
+            // Find and update other stats
+            const statCards = document.querySelectorAll('.stat-card');
+            if (statCards.length >= 2) {
+                statCards[1].querySelector('.stat-value').textContent = totalOrders;
+            }
+            if (statCards.length >= 3) {
+                statCards[2].querySelector('.stat-value').textContent = `₹${avgOrderValue.toFixed(2)}`;
+            }
+        }
+
+        function updateChartsForFilter(filter) {
+            let labels, salesData;
+
+            switch(filter) {
+                case 'day':
+                    labels = ['11AM', '12PM', '1PM', '2PM', '6PM', '7PM', '8PM', '9PM'];
+                    salesData = [450, 1200, 1500, 800, 600, 1800, 2200, 900];
+                    break;
+                case 'week':
+                    labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    salesData = [1200, 1900, 1500, 2100, 1800, 2400, 2200];
+                    break;
+                case 'month':
+                    labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                    salesData = [6800, 7200, 8100, 7800];
+                    break;
+            }
+
+            // Update sales chart
+            if (charts.sales) {
+                charts.sales.data.labels = labels;
+                charts.sales.data.datasets[0].data = salesData;
+                charts.sales.update();
+            }
+            
+            // Fetch real data
+            fetchAndUpdateCharts();
+        }
+
+        async function downloadReport() {
+            try {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                
+                // Show loading
+                const btn = event.target.closest('button');
+                const originalText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                
+                // Fetch orders data
+                const res = await fetch('/api/orders', { credentials: 'include' });
+                const data = await res.json();
+                
+                if (!data.ok || !Array.isArray(data.orders)) {
+                    throw new Error('Failed to fetch orders data');
+                }
+                
+                const orders = data.orders.filter(order => {
+                    if (!order.createdAt) return false;
+                    const orderDate = new Date(order.createdAt);
+                    const start = new Date(startDate);
+                    const end = new Date(endDate);
+                    end.setHours(23, 59, 59, 999);
+                    return orderDate >= start && orderDate <= end;
+                });
+                
+                // Calculate statistics
+                const totalRevenue = orders.reduce((sum, order) => {
+                    return sum + order.items.reduce((s, item) => {
+                        return s + ((item.price || 0) * (item.quantity || item.qty || 0));
+                    }, 0);
+                }, 0);
+                
+                const totalOrders = orders.length;
+                const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+                
+                // Generate CSV report
+                let csvContent = "Analytics Report\n";
+                csvContent += `Date Range: ${startDate} to ${endDate}\n\n`;
+                csvContent += "Summary\n";
+                csvContent += `Total Revenue,₹${totalRevenue.toFixed(2)}\n`;
+                csvContent += `Total Orders,${totalOrders}\n`;
+                csvContent += `Average Order Value,₹${avgOrderValue.toFixed(2)}\n\n`;
+                csvContent += "Order Details\n";
+                csvContent += "Order ID,Table,Date,Items,Total\n";
+                
+                orders.forEach(order => {
+                    const itemsText = order.items.map(i => `${i.name} x${i.quantity || i.qty || 0}`).join('; ');
+                    const orderTotal = order.items.reduce((sum, item) => {
+                        return sum + ((item.price || 0) * (item.quantity || item.qty || 0));
+                    }, 0);
+                    const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
+                    csvContent += `${order.id},Table ${order.tableId},${orderDate},"${itemsText}",₹${orderTotal.toFixed(2)}\n`;
+                });
+                
+                // Download CSV
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `analytics-report-${startDate}-to-${endDate}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Reset button
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                
+                alert(`Report downloaded successfully!\n\nTotal Revenue: ₹${totalRevenue.toFixed(2)}\nTotal Orders: ${totalOrders}\nAverage Order Value: ₹${avgOrderValue.toFixed(2)}`);
+                
+            } catch (error) {
+                console.error('Report generation failed:', error);
+                alert('Failed to generate report. Please try again.');
+                const btn = event.target.closest('button');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-download"></i> Download Report (PDF)';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

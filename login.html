@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | Restaurant Panel</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #1d2b64, #f8cdda);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+    .login-box {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      width: 350px;
+      padding: 30px 25px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 25px;
+      color: #333;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #1d2b64;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #16204d;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-box">
+    <h2>Admin Login</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+    <div class="error" id="errorMsg"></div>
+  </div>
+
+  <script>
+    const API_PREFIX = '/api'; // backend ka URL
+
+    // Show message if redirected back due to missing/expired session
+    (function showRedirectError(){
+      const p = new URLSearchParams(location.search);
+      if (p.get('err') === 'unauth') {
+        const errorMsg = document.getElementById('errorMsg');
+        errorMsg.textContent = 'Session expired or not set. Please login again.';
+      }
+    })();
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.textContent = '';
+
+      try {
+        const res = await fetch(`${API_PREFIX}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // Important for cookie-based auth
+          body: JSON.stringify({ username, password })
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          errorMsg.textContent = data.msg || 'Invalid username or password.';
+          return;
+        }
+
+        const data = await res.json();
+        if (data.ok) {
+          // Redirect to admin panel
+          window.location.href = '/admin.html';
+        } else {
+          errorMsg.textContent = data.msg || 'Login failed.';
+        }
+
+      } catch (err) {
+        errorMsg.textContent = 'Server not responding. Check backend.';
+        console.error(err);
+      }
+    });
+  </script>
+
+</body>
+</html>

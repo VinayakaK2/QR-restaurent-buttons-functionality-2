@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavorFusion - Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #E63946;
+            --primary-orange: #FF8A00;
+            --gold: #FFD700;
+            --dark-bg: #1a1a1a;
+            --sidebar-bg: #2D3748;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #2D3748;
+            --text-light: #718096;
+            --success: #48BB78;
+            --warning: #ED8936;
+            --info: #4299E1;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --gradient: linear-gradient(135deg, #E63946 0%, #FF8A00 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 30px 0;
+            transition: all 0.3s ease;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            text-align: center;
+            padding: 0 25px 30px;
+            border-bottom: 1px solid #4A5568;
+            margin-bottom: 25px;
+        }
+
+        .logo h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0 20px;
+        }
+
+        .nav-links li {
+            margin-bottom: 8px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #CBD5E0;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(230, 57, 70, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-links a i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        /* Management Section */
+        .management-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .management-section:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header h2 i {
+            color: var(--primary-red);
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #E2E8F0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(230, 57, 70, 0.3);
+        }
+
+        .btn-secondary {
+            background: #E2E8F0;
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #CBD5E0;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38A169;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #DD6B20;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(237, 137, 54, 0.3);
+        }
+
+        .btn-danger {
+            background: #C53030;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #9B2C2C;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(197, 48, 48, 0.3);
+        }
+
+        /* Logo Upload */
+        .logo-upload {
+            border: 2px dashed #E2E8F0;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            background: #F7FAFC;
+        }
+
+        .logo-upload:hover {
+            border-color: var(--primary-red);
+            background: rgba(230, 57, 70, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .logo-upload i {
+            font-size: 2.5rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .logo-preview {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 12px;
+            display: none;
+            margin: 0 auto 15px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Theme Settings */
+        .theme-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .theme-option {
+            flex: 1;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .theme-option:hover {
+            border-color: var(--primary-red);
+            transform: translateY(-2px);
+        }
+
+        .theme-option.active {
+            border-color: var(--primary-red);
+            background: rgba(230, 57, 70, 0.05);
+            box-shadow: var(--shadow);
+        }
+
+        .theme-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            margin: 0 auto 15px;
+            border: 2px solid #E2E8F0;
+            transition: all 0.3s ease;
+        }
+
+        .theme-light .theme-preview {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        }
+
+        .theme-dark .theme-preview {
+            background: linear-gradient(135deg, #2D3748 0%, #1A202C 100%);
+        }
+
+        .theme-option.active .theme-preview {
+            border-color: var(--primary-red);
+        }
+
+        /* Backup Section */
+        .backup-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .backup-info {
+            background: #F7FAFC;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border-left: 4px solid var(--info);
+        }
+
+        .backup-info h4 {
+            margin-bottom: 12px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .backup-info ul {
+            color: var(--text-light);
+            margin-left: 20px;
+        }
+
+        .backup-info li {
+            margin-bottom: 8px;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+            margin-left: 15px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary-red);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .toggle-label span:first-child {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        /* Danger Zone */
+        .danger-zone {
+            border: 2px solid #FED7D7;
+            background: #FFF5F5;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .danger-zone h4 {
+            color: #C53030;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 20px;
+            }
+            
+            .nav-links {
+                display: flex;
+                overflow-x: auto;
+                padding: 10px 0;
+            }
+            
+            .nav-links li {
+                margin: 0 10px 0 0;
+            }
+            
+            .nav-links a {
+                white-space: nowrap;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .theme-options {
+                flex-direction: column;
+            }
+            
+            .backup-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <script src="/modal.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h2>FlavorFusion</h2>
+            <p>Admin Dashboard</p>
+        </div>
+        <ul class="nav-links">
+            <li><a href="admin.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="menumng.html"><i class="fas fa-utensils"></i> Menu Management</a></li>
+            <li><a href="categories.html"><i class="fas fa-layer-group"></i> Categories</a></li>
+            <li><a href="qrgenerator.html"><i class="fas fa-qrcode"></i> QR Generator</a></li>
+            
+            <li><a href="tablemng.html"><i class="fas fa-table"></i> Table Management</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+            <li><a href="#" class="active"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="logout.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Settings & Configuration</h1>
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <div>
+                    <div style="font-weight: 600;">Admin User</div>
+                    <div style="font-size: 0.9rem; color: var(--text-light);">Restaurant Manager</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Restaurant Information -->
+        <div class="management-section">
+            <div class="section-header">
+                <h2><i class="fas fa-store"></i> Restaurant Information</h2>
+            </div>
+            
+            <div class="logo-upload" onclick="document.getElementById('logoUpload').click()">
+                <img id="logoPreview" class="logo-preview" alt="Logo preview">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to upload restaurant logo</p>
+                <small style="color: var(--text-light);">Recommended: 200x200px PNG or JPG</small>
+            </div>
+            <input type="file" id="logoUpload" accept="image/*" style="display: none;" onchange="previewLogo(event)">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Restaurant Name</label>
+                    <input type="text" class="form-control" id="restaurantName" value="FlavorFusion" placeholder="Enter restaurant name">
+                </div>
+                <div class="form-group">
+                    <label>Contact Email</label>
+                    <input type="email" class="form-control" id="contactEmail" value="info@flavorfusion.com" placeholder="Enter contact email">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" class="form-control" id="phoneNumber" value="+1 (555) 123-4567" placeholder="Enter phone number">
+                </div>
+                <div class="form-group">
+                    <label>Website</label>
+                    <input type="url" class="form-control" id="website" value="https://flavorfusion.com" placeholder="Enter website URL">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+                <textarea class="form-control" id="restaurantAddress" rows="3" placeholder="Enter full address">123 Gourmet Street, Food District, Mumbai, India - 400001</textarea>
+            </div>
+
+            <button class="btn btn-primary" onclick="saveRestaurantInfo()">
+                <i class="fas fa-save"></i> Save Restaurant Info
+            </button>
+        </div>
+
+        <!-- Admin Credentials -->
+        <div class="management-section">
+            <div class="section-header">
+                <h2><i class="fas fa-user-shield"></i> Admin Credentials</h2>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Current Username</label>
+                    <input type="text" class="form-control" value="admin" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Current Email</label>
+                    <input type="email" class="form-control" value="admin@flavorfusion.com" disabled>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" class="form-control" id="currentPassword" placeholder="Enter current password">
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" class="form-control" id="newPassword" placeholder="Enter new password">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm new password">
+            </div>
+
+            <button class="btn btn-primary" onclick="changePassword()">
+                <i class="fas fa-key"></i> Change Password
+            </button>
+        </div>
+
+        <!-- Theme Settings -->
+        <div class="management-section">
+            <div class="section-header">
+                <h2><i class="fas fa-palette"></i> Theme Settings</h2>
+            </div>
+            
+            <div class="theme-options">
+                <div class="theme-option theme-light active" onclick="selectTheme('light')">
+                    <div class="theme-preview"></div>
+                    <div>Light Theme</div>
+                    <small style="color: var(--text-light);">Clean and bright</small>
+                </div>
+                <div class="theme-option theme-dark" onclick="selectTheme('dark')">
+                    <div class="theme-preview"></div>
+                    <div>Dark Theme</div>
+                    <small style="color: var(--text-light);">Easy on the eyes</small>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px;">
+                <div class="toggle-label">
+                    <span>Enable Notifications</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notificationsToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="toggle-label">
+                    <span>Auto Backup Data</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autoBackupToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="toggle-label">
+                    <span>Email Reports</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="emailReportsToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" style="margin-top: 20px;" onclick="saveThemeSettings()">
+                <i class="fas fa-save"></i> Save Theme Settings
+            </button>
+        </div>
+
+        <!-- Backup & Restore -->
+        <div class="management-section">
+            <div class="section-header">
+                <h2><i class="fas fa-database"></i> Backup & Restore</h2>
+            </div>
+            
+            <div class="backup-actions">
+                <button class="btn btn-success" onclick="backupData()">
+                    <i class="fas fa-download"></i> Backup Data
+                </button>
+                <button class="btn btn-warning" onclick="restoreData()">
+                    <i class="fas fa-upload"></i> Restore Data
+                </button>
+                <button class="btn btn-secondary" onclick="exportData()">
+                    <i class="fas fa-file-export"></i> Export to CSV
+                </button>
+            </div>
+
+            <div class="backup-info">
+                <h4><i class="fas fa-info-circle"></i> Backup Information</h4>
+                <ul>
+                    <li>Last backup: Jan 15, 2024 14:30</li>
+                    <li>Backup includes: Menu, Categories, Tables, Orders, Settings</li>
+                    <li>Backup files are stored locally in your browser</li>
+                    <li>For permanent storage, download backup files</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="management-section">
+            <div class="section-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Danger Zone</h2>
+            </div>
+            
+            <div class="danger-zone">
+                <h4><i class="fas fa-skull-crossbones"></i> Critical Actions</h4>
+                <p style="color: var(--text-light); margin-bottom: 20px;">
+                    These actions are irreversible. Please proceed with caution.
+                </p>
+                
+                <div class="backup-actions">
+                    <button class="btn btn-secondary" onclick="clearAllData()">
+                        <i class="fas fa-broom"></i> Clear All Data
+                    </button>
+                    <button class="btn btn-danger" onclick="resetSettings()">
+                        <i class="fas fa-redo"></i> Reset to Defaults
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize settings
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Navigation functionality
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') === '#') {
+                        e.preventDefault();
+                    }
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        // Logo preview
+        function previewLogo(event) {
+            const input = event.target;
+            const preview = document.getElementById('logoPreview');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Theme selection
+        function selectTheme(theme) {
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.target.closest('.theme-option').classList.add('active');
+            
+            // In real implementation, this would change the actual theme
+            console.log('Theme changed to:', theme);
+        }
+
+        // Save restaurant information
+        function saveRestaurantInfo() {
+            const name = document.getElementById('restaurantName').value;
+            const email = document.getElementById('contactEmail').value;
+            const phone = document.getElementById('phoneNumber').value;
+            const website = document.getElementById('website').value;
+            const address = document.getElementById('restaurantAddress').value;
+
+            // Validate required fields
+            if (!name || !email) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Save to localStorage (in real app, this would be API call)
+            const restaurantInfo = {
+                name,
+                email,
+                phone,
+                website,
+                address,
+                logo: document.getElementById('logoPreview').src || ''
+            };
+            
+            localStorage.setItem('restaurantInfo', JSON.stringify(restaurantInfo));
+            alert('Restaurant information saved successfully!');
+        }
+
+        // Change password
+        function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Please fill in all password fields');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                alert('Password must be at least 6 characters long');
+                return;
+            }
+
+            // In real implementation, this would verify current password and update
+            alert('Password changed successfully!');
+            
+            // Clear password fields
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+
+        // Save theme settings
+        function saveThemeSettings() {
+            const notifications = document.getElementById('notificationsToggle').checked;
+            const autoBackup = document.getElementById('autoBackupToggle').checked;
+            const emailReports = document.getElementById('emailReportsToggle').checked;
+
+            const themeSettings = {
+                notifications,
+                autoBackup,
+                emailReports
+            };
+            
+            localStorage.setItem('themeSettings', JSON.stringify(themeSettings));
+            alert('Theme settings saved successfully!');
+        }
+
+        // Backup data
+        function backupData() {
+            // Collect all data from localStorage
+            const backupData = {
+                menu: localStorage.getItem('dishes') || '[]',
+                categories: localStorage.getItem('categories') || '[]',
+                tables: localStorage.getItem('tables') || '[]',
+                orders: localStorage.getItem('orders') || '[]',
+                settings: localStorage.getItem('restaurantInfo') || '{}',
+                timestamp: new Date().toISOString()
+            };
+
+            // Create download link
+            const dataStr = JSON.stringify(backupData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `flavorfusion-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            alert('Backup created and downloaded successfully!');
+        }
+
+        // Restore data
+        function restoreData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const backupData = JSON.parse(e.target.result);
+                        
+                        (async () => {
+                            const ok = await appConfirm('This will overwrite all current data. Continue?');
+                            if (!ok) return;
+                            // Restore data to localStorage
+                            if (backupData.menu) localStorage.setItem('dishes', backupData.menu);
+                            if (backupData.categories) localStorage.setItem('categories', backupData.categories);
+                            if (backupData.tables) localStorage.setItem('tables', backupData.tables);
+                            if (backupData.orders) localStorage.setItem('orders', backupData.orders);
+                            if (backupData.settings) localStorage.setItem('restaurantInfo', backupData.settings);
+                            alert('Data restored successfully! Please refresh the page.');
+                        })();
+                    } catch (error) {
+                        alert('Error restoring backup: Invalid file format');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        // Export data to CSV
+        function exportData() {
+            alert('This would export all data as CSV files in a real implementation.');
+        }
+
+        // Clear all data
+        function clearAllData() {
+            (async () => {
+                const ok1 = await appConfirm('⚠️ WARNING: This will delete ALL data including menu, orders, and settings. This action cannot be undone. Continue?');
+                if (!ok1) return;
+                const ok2 = await appConfirm('‼️ ARE YOU ABSOLUTELY SURE? All your restaurant data will be permanently deleted.');
+                if (!ok2) return;
+                localStorage.clear();
+                alert('All data has been cleared. The page will now reload.');
+                setTimeout(() => location.reload(), 2000);
+            })();
+        }
+
+        // Reset to defaults
+        function resetSettings() {
+            (async () => {
+                const ok = await appConfirm('Reset all settings to default values? Your data will be preserved.');
+                if (!ok) return;
+                // Clear settings but keep data
+                localStorage.removeItem('restaurantInfo');
+                localStorage.removeItem('themeSettings');
+                alert('Settings reset to defaults. The page will now reload.');
+                setTimeout(() => location.reload(), 2000);
+            })();
+        }
+
+        // Load saved settings
+        function loadSettings() {
+            // Load restaurant info
+            const restaurantInfo = JSON.parse(localStorage.getItem('restaurantInfo') || '{}');
+            if (restaurantInfo.name) {
+                document.getElementById('restaurantName').value = restaurantInfo.name;
+                document.getElementById('contactEmail').value = restaurantInfo.email || '';
+                document.getElementById('phoneNumber').value = restaurantInfo.phone || '';
+                document.getElementById('website').value = restaurantInfo.website || '';
+                document.getElementById('restaurantAddress').value = restaurantInfo.address || '';
+                
+                if (restaurantInfo.logo) {
+                    document.getElementById('logoPreview').src = restaurantInfo.logo;
+                    document.getElementById('logoPreview').style.display = 'block';
+                }
+            }
+
+            // Load theme settings
+            const themeSettings = JSON.parse(localStorage.getItem('themeSettings') || '{}');
+            document.getElementById('notificationsToggle').checked = themeSettings.notifications !== false;
+            document.getElementById('autoBackupToggle').checked = themeSettings.autoBackup || false;
+            document.getElementById('emailReportsToggle').checked = themeSettings.emailReports !== false;
+        }
+    </script>
+</body>
+</html>

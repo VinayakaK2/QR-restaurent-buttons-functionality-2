@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavorFusion - Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #E63946;
+            --primary-orange: #FF8A00;
+            --gold: #FFD700;
+            --dark-bg: #1a1a1a;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #2D3748;
+            --text-light: #718096;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --gradient: linear-gradient(135deg, #E63946 0%, #FF8A00 100%);
+            --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 20px 20px;
+            position: relative;
+        }
+
+        .restaurant-logo {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--primary-red);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 10px rgba(230, 57, 70, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto 20px;
+            font-weight: 400;
+        }
+
+        .divider {
+            width: 80px;
+            height: 4px;
+            background: var(--gold-gradient);
+            margin: 0 auto;
+            border-radius: 2px;
+        }
+
+        /* Categories Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .category-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 320px;
+            cursor: pointer;
+            background: var(--card-bg);
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(230, 57, 70, 0.1), rgba(255, 138, 0, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .category-card:hover::before {
+            opacity: 1;
+        }
+
+        .category-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.4s ease;
+        }
+
+        .category-card:hover .category-image {
+            transform: scale(1.1);
+            filter: brightness(1.1) saturate(1.2);
+        }
+
+        .category-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            padding: 30px 25px 25px;
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .category-card:hover .category-overlay {
+            transform: translateY(-5px);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
+        }
+
+        .category-name {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 0 0 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .items-count {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .items-count::before {
+            content: '•';
+            color: var(--primary-red);
+            font-size: 1.2rem;
+        }
+
+        /* Floating Action Button */
+        .floating-cart {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 16px 25px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(230, 57, 70, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-cart:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(230, 57, 70, 0.6);
+        }
+
+        .cart-badge {
+            background: white;
+            color: var(--primary-red);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: var(--dark-bg);
+            color: white;
+            padding: 60px 20px 30px;
+            margin-top: 80px;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-section h3 {
+            color: var(--primary-red);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 15px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .footer-section p {
+            margin: 10px 0;
+            opacity: 0.8;
+            line-height: 1.8;
+        }
+
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-red);
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            opacity: 0.7;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .categories-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 25px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .restaurant-logo {
+                font-size: 2.5rem;
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 20px;
+            }
+            
+            .category-card {
+                height: 280px;
+            }
+            
+            .floating-cart {
+                bottom: 20px;
+                right: 20px;
+                padding: 14px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .category-card {
+                height: 250px;
+            }
+            
+            .category-name {
+                font-size: 1.3rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+  </style>
+  <script src="/modal.js"></script>
+</head>
+<body>
+
+    <div id="locationCheck"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                display: flex; align-items: center; justify-content: center;
+                background: #fff; font-family: Inter, sans-serif; z-index: 9999;
+                flex-direction: column; color: #333; font-size: 1.2rem;">
+    <p>Checking your location...</p>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="restaurant-logo floating">
+                <i class="fas fa-utensils"></i>
+            </div>
+            <h1>FlavorFusion Menu</h1>
+            <p class="subtitle">Experience culinary excellence with our handcrafted dishes made from the finest ingredients</p>
+            <div class="divider"></div>
+        </header>
+        
+        <div class="categories-grid">
+            <div class="category-card fade-in">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Pizzas" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-name">Pizzas</h3>
+                    <p class="items-count">12 delicious varieties</p>
+                </div>
+            </div>
+            
+            <div class="category-card fade-in">
+                <img src="https://images.unsplash.com/photo-1555949258-eb67b1ef0ce2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Pastas" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-name">Pastas</h3>
+                    <p class="items-count">8 authentic recipes</p>
+                </div>
+            </div>
+            
+            <div class="category-card fade-in">
+                <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Salads" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-name">Salads</h3>
+                    <p class="items-count">10 fresh options</p>
+                </div>
+            </div>
+            
+            <div class="category-card fade-in">
+                <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Desserts" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-name">Desserts</h3>
+                    <p class="items-count">15 sweet creations</p>
+                </div>
+            </div>
+            
+            <div class="category-card fade-in">
+                <img src="https://images.unsplash.com/photo-1437418747212-8d9709afab22?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Drinks" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-name">Drinks</h3>
+                    <p class="items-count">20 refreshing choices</p>
+                </div>
+            </div>
+            
+            <div class="category-card fade-in">
+                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Appetizers" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-name">Appetizers</h3>
+                    <p class="items-count">14 tempting starters</p>
+                </div>
+            </div>
+            
+            <div class="category-card fade-in">
+                <img src="https://images.unsplash.com/photo-1606755962773-d324e3832345?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Burgers" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-name">Burgers</h3>
+                    <p class="items-count">9 gourmet selections</p>
+                </div>
+            </div>
+            
+            <div class="category-card fade-in">
+                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Soups" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-name">Soups</h3>
+                    <p class="items-count">7 comforting bowls</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="floating-cart">
+        <i class="fas fa-shopping-bag"></i>
+        View Cart
+        <div class="cart-badge">0</div>
+    </button>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>FlavorFusion</h3>
+                <p>Experience the finest culinary journey with our expertly crafted dishes and exceptional service.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-tripadvisor"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <div class="contact-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <p>123 Gourmet Street, Food District<br>Mumbai, India - 400001</p>
+                </div>
+                <div class="contact-info">
+                    <i class="fas fa-phone"></i>
+                    <p>+91 98765 43210</p>
+                </div>
+                <div class="contact-info">
+                    <i class="fas fa-envelope"></i>
+                    <p>info@flavorfusion.com</p>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Opening Hours</h4>
+                <p><strong>Monday - Friday:</strong><br>11:00 AM - 11:00 PM</p>
+                <p><strong>Weekends:</strong><br>10:00 AM - 12:00 AM</p>
+                <p><strong>Last Order:</strong> 10:30 PM</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 FlavorFusion Restaurant. All rights reserved. | Crafted with <i class="fas fa-heart" style="color: var(--primary-red);"></i></p>
+        </div>
+    </footer>
+
+    <script>
+        const SESSION_STORAGE_KEY = "qrSessionInfo";
+        const USER_ID_STORAGE_KEY = "qrUserId";
+        const TABLE_ID_STORAGE_KEY = "qrTableId";
+        const HEARTBEAT_INTERVAL_MS = 35000;
+        let activeSession = null;
+        let currentTableId = null;
+        let overlayRef = null;
+        let latestCoords = null;
+        let heartbeatTimer = null;
+        let sessionInitPromise = null;
+
+        function getTableIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("tableId");
+        }
+
+        function persistTableId(tableId) {
+            if (!tableId) return;
+            currentTableId = tableId;
+            localStorage.setItem(TABLE_ID_STORAGE_KEY, tableId);
+        }
+
+        function getStoredSessionInfo() {
+            try {
+                const raw = localStorage.getItem(SESSION_STORAGE_KEY);
+                return raw ? JSON.parse(raw) : null;
+            } catch {
+                return null;
+            }
+        }
+
+        function persistSessionInfo(session) {
+            if (!session || !session.userId) return;
+            try {
+                activeSession = session;
+                localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
+                localStorage.setItem(USER_ID_STORAGE_KEY, session.userId);
+            } catch (err) {
+                console.warn("Failed to persist session info", err);
+            }
+        }
+
+        function restoreSessionFromStorage() {
+            const stored = getStoredSessionInfo();
+            if (stored && stored.tableId && stored.tableId === currentTableId) {
+                activeSession = stored;
+                return true;
+            }
+            return false;
+        }
+
+        function buildSessionPayload() {
+            const stored = getStoredSessionInfo();
+            return {
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                lastPath: window.location.pathname,
+                tableId: currentTableId,
+                restoredSession: stored?.restored || false,
+                storedUserData: stored?.userData ?? null
+            };
+        }
+
+        function showOverlayMessage(message) {
+            if (!overlayRef) return;
+            overlayRef.innerHTML = `<p>${message}</p>`;
+            overlayRef.style.display = "flex";
+        }
+
+        function showDeniedOverlay(distance) {
+            if (!overlayRef) return;
+            overlayRef.innerHTML = `
+                <div style="text-align:center;">
+                    <p>You are outside the restaurant area 🚫</p>
+                    <p>Distance: ${distance !== undefined ? Math.round(distance) : "N/A"} m</p>
+                </div>
+            `;
+            overlayRef.style.display = "flex";
+        }
+
+        function startHeartbeat() {
+            if (heartbeatTimer) clearInterval(heartbeatTimer);
+            heartbeatTimer = setInterval(() => {
+                if (!latestCoords) return;
+                requestLocationValidation(latestCoords, { silent: true });
+            }, HEARTBEAT_INTERVAL_MS);
+        }
+
+        async function startSessionForTable() {
+            if (!currentTableId) {
+                showOverlayMessage("Missing table information.");
+                return false;
+            }
+            const payload = {
+                tableId: currentTableId,
+                sessionData: buildSessionPayload()
+            };
+            const restoreId = localStorage.getItem(USER_ID_STORAGE_KEY);
+            if (restoreId) {
+                payload.restoreUserId = restoreId;
+            }
+            try {
+                const res = await fetch("/api/session/start", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error("Session start failed");
+                const data = await res.json();
+                if (!data.ok || !data.session?.userId) throw new Error("Invalid session response");
+                persistTableId(currentTableId);
+                persistSessionInfo(data.session);
+                return true;
+            } catch (err) {
+                console.error(err);
+                showOverlayMessage("Unable to start session for this table. Please try again.");
+                return false;
+            }
+        }
+
+        async function ensureSessionForCurrentTable() {
+            const storedTableId = localStorage.getItem(TABLE_ID_STORAGE_KEY);
+            if (activeSession && activeSession.tableId === currentTableId) {
+                return true;
+            }
+            if (storedTableId && storedTableId === currentTableId && restoreSessionFromStorage()) {
+                return true;
+            }
+            if (!sessionInitPromise) {
+                sessionInitPromise = startSessionForTable();
+            }
+            const result = await sessionInitPromise;
+            sessionInitPromise = null;
+            return result;
+        }
+
+        async function requestLocationValidation(coords, options = {}) {
+            if (!currentTableId || !coords) return null;
+            if (!activeSession || activeSession.tableId !== currentTableId) {
+                const ready = await ensureSessionForCurrentTable();
+                if (!ready) return null;
+            }
+            const payload = {
+                tableId: currentTableId,
+                userId: activeSession?.userId || localStorage.getItem(USER_ID_STORAGE_KEY),
+                lat: coords.latitude,
+                lng: coords.longitude,
+                sessionData: buildSessionPayload()
+            };
+            const restoreId = localStorage.getItem(USER_ID_STORAGE_KEY);
+            if (restoreId) {
+                payload.restoreUserId = restoreId;
+                if (!payload.userId) {
+                    payload.userId = restoreId;
+                }
+            }
+            try {
+                const res = await fetch("/api/validate-location", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.session) {
+                    persistSessionInfo(data.session);
+                }
+                if (!options.silent) {
+                    if (data.ok && data.inside) {
+                        overlayRef.style.display = "none";
+                        document.body.style.display = "block";
+                    } else {
+                        showDeniedOverlay(data.distance);
+                    }
+                }
+                return data;
+            } catch (err) {
+                console.error(err);
+                if (!options.silent) {
+                    showOverlayMessage("Error verifying your location.");
+                }
+                return null;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            overlayRef = document.getElementById("locationCheck");
+            if (!navigator.geolocation) {
+                showOverlayMessage("Your device doesn’t support location access.");
+                return;
+            }
+
+            const tableFromUrl = getTableIdFromUrl();
+            if (tableFromUrl) {
+                persistTableId(tableFromUrl);
+            }
+            currentTableId = currentTableId || localStorage.getItem(TABLE_ID_STORAGE_KEY);
+            if (!currentTableId) {
+                showOverlayMessage("QR code is missing table information.");
+                return;
+            }
+
+            const sessionReady = await ensureSessionForCurrentTable();
+            if (!sessionReady) return;
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                latestCoords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
+                const result = await requestLocationValidation(latestCoords, { silent: false });
+                if (result?.inside) {
+                    startHeartbeat();
+                }
+            }, () => {
+                showOverlayMessage("Please enable GPS to access this page.");
+            });
+
+            navigator.geolocation.watchPosition((pos) => {
+                latestCoords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
+            });
+        });
+
+        async function verifyLocationBeforeOrder() {
+            if (!navigator.geolocation) {
+                alert("Your device does not support location access.");
+                return false;
+            }
+            const sessionReady = await ensureSessionForCurrentTable();
+            if (!sessionReady) {
+                alert("Unable to start session. Please rescan the QR code.");
+                return false;
+            }
+
+            return new Promise((resolve) => {
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    latestCoords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
+                    const response = await requestLocationValidation(latestCoords, { silent: true });
+                    if (response?.inside) {
+                        alert(`You are ${response.distance}m from restaurant ✅`);
+                        resolve(true);
+                    } else {
+                        alert(`${response?.msg || "Location validation failed"}${response?.distance !== undefined ? ` (distance: ${response.distance}m)` : ""}`);
+                        resolve(false);
+                    }
+                }, () => {
+                    alert("Please enable location to place order.");
+                    resolve(false);
+                });
+            });
+        }
+        // Fade-in animation on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const fadeInOnScroll = function() {
+                fadeElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.classList.add('visible');
+                    }
+                });
+            };
+            
+            // Initial check
+            fadeInOnScroll();
+            
+            // Check on scroll
+            window.addEventListener('scroll', fadeInOnScroll);
+            
+            // Add click functionality to category cards
+            const categoryCards = document.querySelectorAll('.category-card');
+            categoryCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const categoryName = this.querySelector('.category-name').textContent;
+
+                    if (categoryName === 'Appetizers') {
+                        window.location.href = 'appetizers.html';
+                    } else {
+                        alert(`Page for ${categoryName} not created yet`);
+                    }
+                });
+            });
+
+            // Floating cart functionality
+            const floatingCart = document.querySelector('.floating-cart');
+            floatingCart.addEventListener('click', function() {
+                alert('Cart functionality will be implemented soon!');
+            });
+        });
+    </script>
+</body>
+</html>

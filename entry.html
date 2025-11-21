@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Location Check</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f8fafc;
+      color: #1f2933;
+    }
+    .card {
+      background: #ffffff;
+      padding: 24px 28px;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.15);
+      max-width: 420px;
+      width: 92%;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+    }
+    p {
+      margin: 8px 0;
+      font-size: 0.95rem;
+    }
+    .muted {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Checking your distance from the restaurant…</h1>
+    <p id="status" class="muted">Please allow location access in your browser.</p>
+  </div>
+
+  <script>
+    if (!navigator.geolocation) {
+      document.getElementById("status").textContent =
+        "Your device doesn't support location access.";
+    } else {
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const userLat = pos.coords.latitude;
+        const userLong = pos.coords.longitude;
+
+        try {
+          const response = await fetch("/check-distance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userLat, userLong })
+          });
+
+          const data = await response.json();
+
+          if (data.allowed) {
+            console.log("Access Granted — User is near the restaurant");
+            const nextUrl = new URL("/index.html", window.location.origin);
+            nextUrl.search = window.location.search;
+            window.location.href = nextUrl.toString();
+          } else {
+            console.log("Access Denied — User is too far");
+            window.location.href = "/denied.html";
+          }
+        } catch (err) {
+          console.error(err);
+          document.getElementById("status").textContent =
+            "Error checking distance. Please try again.";
+        }
+      }, (err) => {
+        console.error(err);
+        document.getElementById("status").textContent =
+          "Please enable location access to continue.";
+      });
+    }
+  </script>
+</body>
+</html>
+
+

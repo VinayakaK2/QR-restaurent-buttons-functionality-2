@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlavorFusion - Bill</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f5f5;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+    }
+    .bill {
+      width: 350px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .bill-header { text-align: center; border-bottom: 2px dotted #ccc; margin-bottom: 10px; padding-bottom: 8px; }
+    .bill-header img { width: 60px; margin-bottom: 8px; }
+    .bill-header h2 { margin: 0; color: #E63946; }
+    .details { font-size: 0.9rem; line-height: 1.4; margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 6px 4px; }
+    th { border-bottom: 1px dashed #aaa; }
+    .totals { border-top: 1px dashed #aaa; margin-top: 8px; padding-top: 6px; font-weight: 600; }
+    .totals p { display:flex; justify-content:space-between; margin:4px 0; }
+    .footer { text-align:center; font-size:0.8rem; color:#555; border-top:1px dashed #ccc; margin-top:10px; padding-top:6px; }
+    .actions { display:flex; justify-content:space-between; margin-top:15px; }
+    button { border:none; border-radius:6px; padding:8px 14px; font-weight:600; color:white; cursor:pointer; }
+    .print-btn { background:linear-gradient(135deg,#E63946,#FF8A00); }
+    .pdf-btn { background:linear-gradient(135deg,#43A047,#2E7D32); }
+    @media print { .actions {display:none;} body{background:white;} .bill{box-shadow:none;border:none;} }
+  </style>
+</head>
+<body>
+  <div class="bill" id="billContainer">
+    <div class="bill-header">
+      <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="logo">
+      <h2>FlavorFusion</h2>
+      <p>Delicious Dining · Mumbai</p>
+      <p><strong>Tax Invoice</strong></p>
+    </div>
+
+    <div class="details">
+      <p><strong>Date:</strong> <span id="billDate"></span></p>
+      <p><strong>Bill No:</strong> <span id="billNo"></span></p>
+    </div>
+
+    <table id="billTable">
+      <thead>
+        <tr><th>Item</th><th>Qty</th><th>Rate</th><th>Amt</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="totals">
+      <p><span>Sub Total</span><span id="subTotal">₹0.00</span></p>
+      <p><span>SGST (2.5%)</span><span id="sgst">₹0.00</span></p>
+      <p><span>CGST (2.5%)</span><span id="cgst">₹0.00</span></p>
+      <p style="border-top:1px solid #ccc;margin-top:5px;padding-top:5px;">
+        <span><strong>Total</strong></span><span id="grandTotal"><strong>₹0.00</strong></span>
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>Please check the bill before making payment.</p>
+      <p>Thank you · Visit again!</p>
+    </div>
+
+    <div class="actions">
+      <button class="print-btn" onclick="window.print()">🖨 Print</button>
+      <button class="pdf-btn" id="downloadPdf">⬇ Download PDF</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <script>
+    // Date & Bill number
+    const now = new Date();
+    document.getElementById('billDate').textContent = now.toLocaleString();
+    document.getElementById('billNo').textContent = Math.floor(100000 + Math.random()*900000);
+
+    // Fetch order
+    const order = JSON.parse(localStorage.getItem('currentOrder')) || [];
+    const tbody = document.querySelector('#billTable tbody');
+    let subTotal = 0;
+
+    order.forEach(item => {
+      const total = item.price * item.quantity;
+      subTotal += total;
+      const row = `<tr>
+        <td>${item.name}</td>
+        <td>${item.quantity}</td>
+        <td>₹${item.price.toFixed(2)}</td>
+        <td>₹${total.toFixed(2)}</td>
+      </tr>`;
+      tbody.insertAdjacentHTML('beforeend', row);
+    });
+
+    const sgst = subTotal * 0.025;
+    const cgst = subTotal * 0.025;
+    const grand = subTotal + sgst + cgst;
+
+    document.getElementById('subTotal').textContent = `₹${subTotal.toFixed(2)}`;
+    document.getElementById('sgst').textContent = `₹${sgst.toFixed(2)}`;
+    document.getElementById('cgst').textContent = `₹${cgst.toFixed(2)}`;
+    document.getElementById('grandTotal').textContent = `₹${grand.toFixed(2)}`;
+
+    // PDF Download
+    document.getElementById('downloadPdf').addEventListener('click', () => {
+      const element = document.getElementById('billContainer');
+      html2pdf().set({
+        margin: 0.2,
+        filename: `FlavorFusion_Bill_${Date.now()}.pdf`,
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a5', orientation: 'portrait' }
+      }).from(element).save();
+    });
+  </script>
+</body>
+</html>

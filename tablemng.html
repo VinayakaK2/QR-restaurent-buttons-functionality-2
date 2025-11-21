@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavorFusion - Table Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary-red: #E63946;
+            --primary-orange: #FF8A00;
+            --dark-bg: #1a1a1a;
+            --sidebar-bg: #2D3748;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #2D3748;
+            --text-light: #718096;
+            --success: #48BB78;
+            --warning: #ED8936;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 30px 0;
+        }
+
+        .logo {
+            text-align: center;
+            padding: 0 25px 30px;
+            border-bottom: 1px solid #4A5568;
+            margin-bottom: 25px;
+        }
+
+        .logo h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-red);
+            margin-bottom: 5px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0 20px;
+        }
+
+        .nav-links li {
+            margin-bottom: 8px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #CBD5E0;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(230, 57, 70, 0.1);
+            color: white;
+        }
+
+        .nav-links a i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-red);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #c1121f;
+        }
+
+        .btn-secondary {
+            background: #E2E8F0;
+            color: var(--text-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38A169;
+        }
+
+        /* Tables Overview */
+        .tables-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .table-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-red);
+        }
+
+        .table-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .table-icon {
+            font-size: 2rem;
+            color: var(--primary-red);
+            margin-bottom: 15px;
+        }
+
+        .table-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .table-status {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            background: #F7FAFC;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        /* Table Styles */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .table th {
+            background: #F7FAFC;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .table tr:hover {
+            background: #F7FAFC;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background: #C6F6D5;
+            color: #22543D;
+        }
+
+        .status-occupied {
+            background: #FED7D7;
+            color: #C53030;
+        }
+
+        .status-reserved {
+            background: #FEFCBF;
+            color: #744210;
+        }
+
+        .qr-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .qr-generated {
+            background: #BEE3F8;
+            color: #2A69AC;
+        }
+
+        .qr-pending {
+            background: #E2E8F0;
+            color: #718096;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-qr {
+            background: #BEE3F8;
+            color: #2A69AC;
+        }
+
+        .btn-qr:hover {
+            background: #90CDF4;
+        }
+
+        .btn-edit {
+            background: #C6F6D5;
+            color: #22543D;
+        }
+
+        .btn-edit:hover {
+            background: #9AE6B4;
+        }
+
+        .btn-delete {
+            background: #FED7D7;
+            color: #C53030;
+        }
+
+        .btn-delete:hover {
+            background: #FEB2B2;
+        }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            background: #F7FAFC;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* Capacity Badge */
+        .capacity-badge {
+            background: #EDF2F7;
+            color: var(--text-dark);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            color: var(--text-dark);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .tables-overview {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h2>FlavorFusion</h2>
+            <p style="font-size: 0.9rem; opacity: 0.7;">Admin Panel</p>
+        </div>
+        <ul class="nav-links">
+            <li><a href="admin.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="menumng.html"><i class="fas fa-utensils"></i> Menu Management</a></li>
+            <li><a href="categories.html"><i class="fas fa-layer-group"></i> Categories</a></li>
+            <li><a href="qrgenerator.html"><i class="fas fa-qrcode"></i> QR Generator</a></li>
+            <li><a href="#" class="active"><i class="fas fa-table"></i> Table Management</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="logout.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Table Management</h1>
+        </div>
+
+        <!-- Tables Overview -->
+        <div class="tables-overview">
+            <div class="table-card">
+                <div class="table-icon">
+                    <i class="fas fa-table"></i>
+                </div>
+                <h3>Total Tables</h3>
+                <div class="table-status" id="totalTables">8 tables</div>
+            </div>
+            <div class="table-card">
+                <div class="table-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Available</h3>
+                <div class="table-status" id="availableTables">5 tables</div>
+            </div>
+            <div class="table-card">
+                <div class="table-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Occupied</h3>
+                <div class="table-status" id="occupiedTables">2 tables</div>
+            </div>
+            <div class="table-card">
+                <div class="table-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>Reserved</h3>
+                <div class="table-status" id="reservedTables">1 table</div>
+            </div>
+        </div>
+
+        <!-- Tables List -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Tables List</h2>
+                <button class="btn btn-success" onclick="generateAllQRCodes()">
+                    <i class="fas fa-qrcode"></i> Generate All QR Codes
+                </button>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Table No</th>
+                        <th>Capacity</th>
+                        <th>QR Code</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tablesTableBody">
+                    <!-- Tables will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="card">
+            <div class="bulk-actions">
+                <h3 style="margin-bottom: 15px;">Bulk QR Code Generation</h3>
+                <p style="color: var(--text-light); margin-bottom: 15px;">Generate and download QR codes for all tables</p>
+                <button class="btn btn-primary" onclick="downloadAllQRCodes()">
+                    <i class="fas fa-download"></i> Download All QR Codes (PDF)
+                </button>
+                <button class="btn btn-secondary" onclick="downloadAllQRCodesZIP()" style="margin-left: 10px;">
+                    <i class="fas fa-file-archive"></i> Download All (ZIP)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div class="modal" id="qrModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>QR Code - Table <span id="modalTableNumber"></span></h3>
+                <button class="close-btn" onclick="closeQRModal()">&times;</button>
+            </div>
+            <div style="text-align: center; padding: 20px;">
+                <div id="qrcode"></div>
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="downloadCurrentQR()">
+                        <i class="fas fa-download"></i> Download PNG
+                    </button>
+                    <button class="btn btn-secondary" onclick="printQRCode()" style="margin-left: 10px;">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        const API_PREFIX = '/api';
+        let tables = [];
+        let currentQRTable = null;
+        let socket = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchTables();
+            initSocketConnection();
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') === '#') {
+                        e.preventDefault();
+                    }
+                    document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+
+        // Initialize Socket.IO connection for real-time table updates
+        function initSocketConnection() {
+            try {
+                socket = io({ withCredentials: true });
+                socket.on('connect', () => {
+                    console.log('Socket connected for tables');
+                });
+                socket.on('tables:update', (data) => {
+                    if (Array.isArray(data)) {
+                        tables = data;
+                        tables.sort((a, b) => {
+                            const aNum = Number.isFinite(a.number) ? a.number : Number.MAX_SAFE_INTEGER;
+                            const bNum = Number.isFinite(b.number) ? b.number : Number.MAX_SAFE_INTEGER;
+                            return aNum - bNum;
+                        });
+                        loadTablesOverview();
+                        loadTablesTable();
+                    }
+                });
+                socket.on('disconnect', () => {
+                    console.log('Socket disconnected');
+                });
+            } catch (e) {
+                console.warn('Socket.IO init failed, will use polling', e);
+                setInterval(fetchTables, 5000);
+            }
+        }
+
+        async function fetchTables() {
+            try {
+                const res = await fetch(`${API_PREFIX}/tables`, { credentials: 'include' });
+                const data = await res.json();
+                if (!data.ok) throw new Error(data.message || 'Failed to load tables');
+                tables = Array.isArray(data.tables) ? data.tables : [];
+                tables.sort((a, b) => {
+                    const aNum = Number.isFinite(a.number) ? a.number : Number.MAX_SAFE_INTEGER;
+                    const bNum = Number.isFinite(b.number) ? b.number : Number.MAX_SAFE_INTEGER;
+                    return aNum - bNum;
+                });
+                loadTablesOverview();
+                loadTablesTable();
+            } catch (err) {
+                console.error(err);
+                alert('Unable to load tables. Please refresh.');
+            }
+        }
+
+        function loadTablesOverview() {
+            const totalTables = tables.length;
+            const availableTables = tables.filter(table => (table.status || 'available') === 'available').length;
+            const occupiedTables = tables.filter(table => table.status === 'occupied').length;
+            const reservedTables = tables.filter(table => table.status === 'reserved').length;
+
+            document.getElementById('totalTables').textContent = `${totalTables} tables`;
+            document.getElementById('availableTables').textContent = `${availableTables} tables`;
+            document.getElementById('occupiedTables').textContent = `${occupiedTables} tables`;
+            document.getElementById('reservedTables').textContent = `${reservedTables} table${reservedTables !== 1 ? 's' : ''}`;
+        }
+
+        function loadTablesTable() {
+            const tableBody = document.getElementById('tablesTableBody');
+            tableBody.innerHTML = '';
+            tables.forEach(table => {
+                const safeId = String(table.id).replace(/'/g, "\\'");
+                const labelNumber = table.number !== undefined && table.number !== null ? `Table ${table.number}` : (table.name || table.id);
+                const qrGenerated = Boolean(table.qrUrl);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div style="font-weight: 600;">${labelNumber}</div>
+                    </td>
+                    <td>
+                        <span class="capacity-badge">${table.capacity || 0} people</span>
+                    </td>
+                    <td>
+                        <span class="qr-status ${qrGenerated ? 'qr-generated' : 'qr-pending'}">
+                            ${qrGenerated ? 'Generated' : 'Pending'}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status-badge status-${table.status || 'available'}">
+                            ${(table.status || 'available').charAt(0).toUpperCase() + (table.status || 'available').slice(1)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn btn-qr" onclick="generateTableQR('${safeId}')">
+                                <i class="fas fa-qrcode"></i> QR Code
+                            </button>
+                            <button class="action-btn btn-edit" onclick="editTable('${safeId}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn btn-delete" onclick="deleteTable('${safeId}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        async function addTable() {
+            const tableNumber = document.getElementById('tableNumber').value;
+            const capacity = document.getElementById('tableCapacity').value;
+            const pin = document.getElementById('tablePin').value.trim() || '1234';
+
+            if (!tableNumber) {
+                alert('Please enter a table number');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_PREFIX}/tables`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        number: Number(tableNumber),
+                        capacity: Number(capacity),
+                        pin
+                    })
+                });
+                const data = await res.json();
+                if (!data.ok) throw new Error(data.message || 'Failed to add table');
+
+                document.getElementById('tableNumber').value = '';
+                document.getElementById('tableCapacity').value = '2';
+                document.getElementById('tablePin').value = '';
+                tables.push(data.table);
+                tables.sort((a, b) => {
+                    const aNum = Number.isFinite(a.number) ? a.number : Number.MAX_SAFE_INTEGER;
+                    const bNum = Number.isFinite(b.number) ? b.number : Number.MAX_SAFE_INTEGER;
+                    return aNum - bNum;
+                });
+                loadTablesOverview();
+                loadTablesTable();
+                alert('Table added successfully!');
+                // Socket will update automatically, but refresh to be sure
+                setTimeout(fetchTables, 500);
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
+            }
+        }
+
+        function generateTableQR(tableId) {
+            const table = tables.find(t => String(t.id) === String(tableId));
+            if (!table) return;
+
+            if (!table.qrUrl) {
+                if (confirm('No QR code found for this table. Open the QR Generator to create one now?')) {
+                    window.location.href = `qrgenerator.html?tableId=${encodeURIComponent(table.id)}`;
+                }
+                return;
+            }
+
+            currentQRTable = table;
+            const qrcodeContainer = document.getElementById('qrcode');
+            qrcodeContainer.innerHTML = '';
+            QRCode.toCanvas(qrcodeContainer, table.qrUrl, {
+                width: 200,
+                height: 200,
+                colorDark: "#E63946",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            }, function(error) {
+                if (error) {
+                    console.error(error);
+                    alert('Error generating QR code preview');
+                    return;
+                }
+                document.getElementById('modalTableNumber').textContent = table.number ?? table.name ?? table.id;
+                document.getElementById('qrModal').style.display = 'flex';
+            });
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
+
+        function downloadCurrentQR() {
+            if (!currentQRTable) return;
+            const canvas = document.getElementById('qrcode').querySelector('canvas');
+            const link = document.createElement('a');
+            link.download = `table-${currentQRTable.number ?? currentQRTable.id}-qrcode.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function printQRCode() {
+            if (!currentQRTable) return;
+            const canvas = document.getElementById('qrcode').querySelector('canvas');
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head><title>Table ${currentQRTable.number ?? currentQRTable.id} QR Code</title></head>
+                    <body style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                        <img src="${canvas.toDataURL('image/png')}" alt="QR Code">
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function generateAllQRCodes() {
+            window.location.href = 'qrgenerator.html';
+        }
+
+        function downloadAllQRCodes() {
+            alert('PDF export for all QR codes will be added soon. Please download individually for now.');
+        }
+
+        function downloadAllQRCodesZIP() {
+            alert('ZIP export for all QR codes will be added soon. Please download individually for now.');
+        }
+
+        async function editTable(tableId) {
+            const table = tables.find(t => String(t.id) === String(tableId));
+            if (!table) return;
+            const newStatus = prompt('Update status (available/occupied/reserved):', table.status || 'available');
+            if (!newStatus) return;
+            const normalizedStatus = newStatus.toLowerCase();
+            if (!['available', 'occupied', 'reserved'].includes(normalizedStatus)) {
+                alert('Invalid status value.');
+                return;
+            }
+            try {
+                const res = await fetch(`${API_PREFIX}/tables/${tableId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ status: normalizedStatus })
+                });
+                const data = await res.json();
+                if (!data.ok) throw new Error(data.message || 'Failed to update table');
+                tables = tables.map(t => (t.id === data.table.id ? data.table : t));
+                loadTablesOverview();
+                loadTablesTable();
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
+            }
+        }
+
+        async function deleteTable(tableId) {
+            if (!confirm('Are you sure you want to delete this table?')) return;
+            try {
+                const res = await fetch(`${API_PREFIX}/tables/${tableId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                const data = await res.json();
+                if (!data.ok) throw new Error(data.message || 'Failed to delete table');
+                tables = tables.filter(table => String(table.id) !== String(tableId));
+                loadTablesOverview();
+                loadTablesTable();
+                alert('Table deleted successfully!');
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
+            }
+        }
+    </script>
+</body>
+</html>
